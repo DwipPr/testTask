@@ -3,6 +3,7 @@
 static double GetDifferenceValue(const double x, const unsigned int n);
 static unsigned char ConditionIsMet(const double pastValue, const double eps);
 static double GetSinSeriesSum(const double x, const double eps);
+static unsigned char GetSign(const unsigned int num);
 
 static double GetDifferenceValue(const double x, const unsigned int n)
 {
@@ -16,27 +17,23 @@ static unsigned char ConditionIsMet(const double pastValue, const double eps)
     return result;
 }
 
-static short int GetSign(const unsigned int num)
+static unsigned char GetSign(const unsigned int num)
 {
-    short int result = (num % 2) ? 1 : -1;
-    return result;
+    return (num % 2 == 0) ? 1 : 0;
 }
 
 static double GetSinSeriesSum(const double x, const double eps)
 {
     double pastValue = x;
     double seriesSum = pastValue;
-    unsigned int num = 1;
-
     double curValue = 0;
-    
+    unsigned int num = 1;
 
     while (ConditionIsMet(pastValue, eps))
     {
         curValue = pastValue * GetDifferenceValue(x, num);
         pastValue = curValue;
-        seriesSum += curValue * GetSign(num);
-        num++;
+        seriesSum += GetSign(num++) ? curValue : -curValue;
     }
 
     return seriesSum;
@@ -50,7 +47,7 @@ int main(void)
     scanf("%lf", &x);
     printf("Please enter epsilon: ");
     scanf("%lf", &eps);
-
+    
     double result = GetSinSeriesSum(x, eps);
 
     printf("sin(%.5lf) = %.10lf\n", x, result);
